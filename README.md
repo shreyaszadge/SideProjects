@@ -9,7 +9,7 @@ This repository is a collection of my side projects, coding experiments, prototy
 Here are some of my projects:
 
 Project| Description| Technology| Link
-ResumeBind | A simple application to create resume.| Javascript| [View Project](https://poetic-parfait-6847c4.netlify.app/)
+ResumeBind | A simple application to create resume.| Javascript| <a href="https://poetic-parfait-6847c4.netlify.app/" target="_blank" rel="noopener noreferrer">View Project</a>
 
 
 More projects will be added as I build them.
