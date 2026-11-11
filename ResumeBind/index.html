@@ -1,0 +1,2834 @@
+<!doctype html>
+<!-- Copyright (c) 2026 shreyaszadge (https://github.com/shreyaszadge). All rights reserved. -->
+<html lang="en">
+    <head>
+        <meta charset="utf-8" />
+        <meta name="author" content="shreyaszadge" />
+        <title>ResumeBind</title>
+        <meta
+            name="viewport"
+            content="width=device-width, initial-scale=1, viewport-fit=cover"
+        />
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+        <style>
+            :root {
+                --bg: #efede9;
+                --pn: #fbfaf8;
+                --ink: #23262b;
+                --mut: #6b717b;
+                --ln: #d9d5ce;
+                --ac: #0e6e66;
+                --acs: #dcefec;
+                --bd: #fff0c2;
+                --bdl: #d9a82e;
+                box-sizing: border-box;
+                padding-top: env(safe-area-inset-top, 0px);
+                padding-bottom: env(safe-area-inset-bottom, 0px);
+            }
+            @media (prefers-color-scheme: dark) {
+                :root:not([data-theme="light"]) {
+                    --bg: #17191c;
+                    --pn: #202327;
+                    --ink: #e6e8eb;
+                    --mut: #9aa1ab;
+                    --ln: #34383e;
+                    --ac: #4cc3b8;
+                    --acs: #1d3a38;
+                    --bd: #4a3c14;
+                    --bdl: #b88f22;
+                }
+            }
+            :root[data-theme="dark"] {
+                --bg: #17191c;
+                --pn: #202327;
+                --ink: #e6e8eb;
+                --mut: #9aa1ab;
+                --ln: #34383e;
+                --ac: #4cc3b8;
+                --acs: #1d3a38;
+                --bd: #4a3c14;
+                --bdl: #b88f22;
+            }
+            * {
+                box-sizing: border-box;
+            }
+            html,
+            body {
+                height: 100%;
+            }
+            body {
+                margin: 0;
+                display: flex;
+                flex-direction: column;
+                background: var(--bg);
+                color: var(--ink);
+                font:
+                    13px/1.4 system-ui,
+                    "Segoe UI",
+                    Roboto,
+                    sans-serif;
+            }
+            header {
+                height: 48px;
+                display: flex;
+                align-items: center;
+                gap: 8px;
+                padding: 0 12px;
+                background: var(--pn);
+                border-bottom: 1px solid var(--ln);
+                flex: none;
+            }
+            header b {
+                font-size: 15px;
+                margin-right: auto;
+            }
+            button,
+            .btn,
+            select,
+            input,
+            textarea {
+                font: inherit;
+                color: inherit;
+            }
+            button,
+            .btn {
+                background: var(--pn);
+                border: 1px solid var(--ln);
+                border-radius: 6px;
+                padding: 5px 10px;
+                cursor: pointer;
+                display: inline-flex;
+                align-items: center;
+            }
+            button:hover,
+            .btn:hover {
+                border-color: var(--ac);
+            }
+            button:focus-visible,
+            input:focus-visible,
+            select:focus-visible,
+            textarea:focus-visible {
+                outline: 2px solid var(--ac);
+                outline-offset: 1px;
+            }
+            .pri {
+                background: var(--ac);
+                color: #fff;
+                border-color: var(--ac);
+            }
+            .on {
+                background: var(--acs);
+                border-color: var(--ac);
+            }
+            input,
+            select,
+            textarea {
+                background: var(--bg);
+                border: 1px solid var(--ln);
+                border-radius: 6px;
+                padding: 4px 6px;
+                min-width: 0;
+            }
+            input[type="color"] {
+                padding: 0;
+                width: 34px;
+                height: 28px;
+            }
+            main {
+                flex: 1;
+                min-height: 0;
+                display: grid;
+                grid-template-rows: minmax(0, 1fr);
+                grid-template-columns: 272px 1fr 292px;
+            }
+            aside {
+                min-height: 0;
+                background: var(--pn);
+                overflow: auto;
+                padding: 10px;
+                border-right: 1px solid var(--ln);
+            }
+            #R {
+                border: 0;
+                border-left: 1px solid var(--ln);
+            }
+            aside h4 {
+                margin: 14px 0 6px;
+                font-size: 13px;
+            }
+            aside h4:first-child {
+                margin-top: 0;
+            }
+            .r {
+                display: flex;
+                gap: 6px;
+                align-items: center;
+                flex-wrap: wrap;
+                margin: 4px 0;
+            }
+            .r label {
+                color: var(--mut);
+                display: flex;
+                gap: 4px;
+                align-items: center;
+            }
+            .r input[type="number"] {
+                width: 62px;
+            }
+            .mut {
+                color: var(--mut);
+                margin: 4px 0;
+            }
+            #L #q,
+            #L textarea {
+                width: 100%;
+                margin: 8px 0;
+            }
+            #src {
+                height: 60vh;
+                font:
+                    12px/1.4 ui-monospace,
+                    Menlo,
+                    Consolas,
+                    monospace;
+            }
+            #err {
+                color: #b3261e;
+                background: #fdeceb;
+                padding: 6px;
+                border-radius: 6px;
+                margin: 6px 0;
+            }
+            .n {
+                margin-left: 10px;
+            }
+            .n[hidden] {
+                display: none;
+            }
+            #tree > .n {
+                margin-left: 0;
+            }
+            .row {
+                display: flex;
+                gap: 6px;
+                align-items: baseline;
+                padding: 3px 4px;
+                border-radius: 5px;
+                cursor: grab;
+            }
+            .row:hover {
+                background: var(--acs);
+            }
+            .row b {
+                font-weight: 600;
+            }
+            .row i {
+                color: var(--mut);
+                font-style: normal;
+                overflow: hidden;
+                text-overflow: ellipsis;
+                white-space: nowrap;
+                min-width: 0;
+            }
+            .car {
+                width: 10px;
+                color: var(--mut);
+            }
+            .g > .kids {
+                display: none;
+                border-left: 1px solid var(--ln);
+                margin-left: 4px;
+            }
+            .g.open > .kids {
+                display: block;
+            }
+            .g.open > .row .car {
+                transform: rotate(90deg);
+            }
+            #C {
+                display: flex;
+                flex-direction: column;
+                min-width: 0;
+                min-height: 0;
+            }
+            #tb {
+                display: flex;
+                gap: 6px;
+                flex-wrap: wrap;
+                padding: 8px;
+                background: var(--pn);
+                border-bottom: 1px solid var(--ln);
+            }
+            #scroll {
+                flex: 1;
+                min-height: 0;
+                overflow: auto;
+                padding: 22px 12px;
+            }
+            #pages {
+                --pw: 210mm;
+                --ph: 297mm;
+                --pp: 20mm;
+            }
+            .page {
+                background: #fff;
+                color: #111;
+                font:
+                    14px/1.55 Arial,
+                    Helvetica,
+                    sans-serif;
+                margin: 0 auto 24px;
+                padding: var(--pp);
+                width: var(--pw);
+                min-height: var(--ph);
+                box-shadow: 0 1px 8px rgba(0, 0, 0, 0.25);
+                outline: 0;
+                overflow-wrap: anywhere;
+            }
+            .page h1 {
+                font-size: 28px;
+                margin: 0.4em 0;
+            }
+            .page h2 {
+                font-size: 22px;
+                margin: 0.4em 0;
+            }
+            .page h3 {
+                font-size: 17px;
+                margin: 0.4em 0;
+            }
+            .page p {
+                margin: 0 0 0.6em;
+            }
+            .page table {
+                border-collapse: collapse;
+                width: 100%;
+                margin: 6px 0;
+            }
+            .page td,
+            .page th {
+                border: 1px solid #999;
+                padding: 6px;
+                text-align: left;
+                vertical-align: top;
+            }
+            .page h2.sec {
+                color: #12355b;
+                font-size: 15px;
+                border-bottom: 1px solid #c5cfdb;
+                padding-bottom: 3px;
+                margin: 16px 0 8px;
+                letter-spacing: 0.03em;
+            }
+            .page .rn {
+                font-size: 32px;
+                color: #12355b;
+                margin: 0;
+            }
+            .page .rt {
+                font-size: 16px;
+                color: #3d4a5c;
+                margin: 2px 0 6px;
+            }
+            .page .rc {
+                font-size: 12px;
+                color: #4a5566;
+                border-bottom: 2px solid #12355b;
+                padding-bottom: 10px;
+                margin-bottom: 4px;
+            }
+            .page .job {
+                margin: 8px 0 2px;
+            }
+            .page ul {
+                margin: 2px 0 6px;
+                padding-left: 20px;
+            }
+            .page li {
+                margin-bottom: 3px;
+            }
+            footer {
+                flex: none;
+                display: flex;
+                gap: 14px;
+                flex-wrap: wrap;
+                justify-content: center;
+                padding: 5px 10px;
+                border-top: 1px solid var(--ln);
+                background: var(--pn);
+                color: var(--mut);
+                font-size: 12px;
+            }
+            footer a {
+                color: var(--ac);
+            }
+            #tm {
+                position: fixed;
+                inset: 0;
+                background: rgba(0, 0, 0, 0.5);
+                z-index: 20;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                padding: 16px;
+            }
+            #tm[hidden] {
+                display: none;
+            }
+            .box {
+                background: var(--pn);
+                border-radius: 10px;
+                max-width: 900px;
+                width: 100%;
+                max-height: 90vh;
+                overflow: auto;
+                padding: 16px;
+            }
+            #tg {
+                display: grid;
+                grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+                gap: 12px;
+                margin-top: 10px;
+            }
+            .tc {
+                display: block;
+                padding: 0;
+                overflow: hidden;
+                text-align: left;
+                border-radius: 8px;
+            }
+            .tc .sw {
+                height: 96px;
+                border-bottom: 1px solid var(--ln);
+            }
+            .tc .tt {
+                padding: 8px;
+            }
+            .page.t2,
+            .page.t3 {
+                padding: 0;
+            }
+            .t2 {
+                font-size: 13px;
+            }
+            .t2 .sb {
+                display: grid;
+                grid-template-columns: 34% 1fr;
+                min-height: var(--ph);
+            }
+            .t2 .sd {
+                background: #1f2937;
+                color: #e5e7eb;
+                padding: 26px 18px;
+            }
+            .t2 .ph {
+                width: 110px;
+                height: 110px;
+                border-radius: 50%;
+                object-fit: cover;
+                display: block;
+                margin: 0 auto 16px;
+                border: 3px solid #2dd4bf;
+            }
+            .t2 .sd h3 {
+                color: #5eead4;
+                font-size: 13px;
+                margin: 14px 0 6px;
+                border-bottom: 1px solid #374151;
+                padding-bottom: 3px;
+            }
+            .t2 .sd p {
+                margin: 0 0 4px;
+                font-size: 12px;
+                word-break: break-all;
+            }
+            .t2 .sd ul {
+                padding-left: 16px;
+                margin: 0;
+                font-size: 12px;
+            }
+            .t2 .sd .bind {
+                background: rgba(255, 255, 255, 0.14);
+            }
+            .t2 .mn {
+                padding: 28px 26px;
+            }
+            .t2 h1 {
+                font-size: 30px;
+                margin: 0;
+                color: #111827;
+            }
+            .t2 .sub {
+                color: #0f766e;
+                font-size: 15px;
+                margin: 2px 0 10px;
+                font-weight: bold;
+            }
+            .t2 .mn h2 {
+                font-size: 14px;
+                color: #0f766e;
+                border-bottom: 2px solid #99f6e4;
+                padding-bottom: 2px;
+                margin: 14px 0 6px;
+            }
+            .t2 .job {
+                margin: 8px 0 2px;
+            }
+            .t2 .mn ul {
+                margin: 2px 0 6px;
+                padding-left: 18px;
+            }
+            .t3 .hd {
+                background: #4a1d4f;
+                color: #fff;
+                padding: 26px 28px;
+                display: flex;
+                gap: 20px;
+                align-items: center;
+            }
+            .t3 .hd img {
+                width: 104px;
+                height: 104px;
+                border-radius: 50%;
+                border: 4px solid #ffb88c;
+                object-fit: cover;
+                flex: none;
+            }
+            .t3 h1 {
+                margin: 0;
+                font-size: 32px;
+                color: #fff;
+            }
+            .t3 .sub {
+                color: #ffb88c;
+                margin: 2px 0 6px;
+                font-size: 15px;
+            }
+            .t3 .hd p {
+                margin: 0;
+                font-size: 12px;
+                color: #f3e8f5;
+            }
+            .t3 .hd .bind {
+                background: rgba(255, 255, 255, 0.16);
+            }
+            .t3 .bd {
+                display: grid;
+                grid-template-columns: 1fr 31%;
+                min-height: calc(var(--ph) - 160px);
+            }
+            .t3 .lf {
+                padding: 22px 24px;
+            }
+            .t3 .rg {
+                background: #fff3ea;
+                padding: 22px 18px;
+            }
+            .t3 h2 {
+                font-size: 14px;
+                color: #4a1d4f;
+                margin: 0 0 6px;
+                border-left: 4px solid #ffb88c;
+                padding-left: 8px;
+            }
+            .t3 .rg h2 {
+                margin-top: 16px;
+            }
+            .t3 .rg h2:first-child {
+                margin-top: 0;
+            }
+            .t3 .job {
+                margin: 8px 0 2px;
+            }
+            .t3 ul {
+                margin: 2px 0 8px;
+                padding-left: 18px;
+            }
+            .t4 .top {
+                display: flex;
+                gap: 18px;
+                align-items: center;
+                border-bottom: 3px solid #16a34a;
+                padding-bottom: 14px;
+            }
+            .t4 .top img {
+                width: 96px;
+                height: 96px;
+                border-radius: 14px;
+                object-fit: cover;
+                flex: none;
+            }
+            .t4 h1 {
+                margin: 0;
+                font-size: 30px;
+                color: #14532d;
+            }
+            .t4 .sub {
+                margin: 2px 0 6px;
+                font-size: 15px;
+                color: #166534;
+            }
+            .t4 .top p {
+                margin: 0;
+                font-size: 12px;
+            }
+            .t4 h2 {
+                background: #dcfce7;
+                color: #166534;
+                padding: 4px 10px;
+                border-radius: 4px;
+                font-size: 14px;
+                margin: 16px 0 8px;
+            }
+            .t4 .cc {
+                columns: 2;
+                margin: 0;
+                padding-left: 18px;
+            }
+            .t4 ul {
+                margin: 2px 0 6px;
+                padding-left: 20px;
+            }
+            .t4 .job {
+                margin: 6px 0 2px;
+            }
+            .page.t5 {
+                font-family: "Times New Roman", Times, serif;
+                font-size: 14px;
+            }
+            .t5 .hd5 {
+                text-align: center;
+                margin-bottom: 6px;
+            }
+            .t5 h1 {
+                margin: 0;
+                font-size: 32px;
+                letter-spacing: 0.08em;
+                color: #7a1f2b;
+                font-weight: normal;
+            }
+            .t5 .sub {
+                font-style: italic;
+                font-size: 16px;
+                margin: 2px 0 4px;
+            }
+            .t5 .hd5 p {
+                margin: 0 0 2px;
+                font-size: 12.5px;
+            }
+            .t5 h2 {
+                font-variant: small-caps;
+                font-size: 16px;
+                letter-spacing: 0.1em;
+                color: #7a1f2b;
+                text-align: center;
+                border-top: 1px solid #7a1f2b;
+                border-bottom: 1px solid #7a1f2b;
+                padding: 3px 0;
+                margin: 16px 0 8px;
+                font-weight: normal;
+            }
+            .t5 .dt {
+                float: right;
+                font-style: italic;
+            }
+            .t5 .job {
+                margin: 8px 0 2px;
+                overflow: hidden;
+            }
+            .t5 ul {
+                margin: 2px 0 6px;
+                padding-left: 20px;
+            }
+            .page a {
+                color: #0b57d0;
+                text-decoration: underline;
+            }
+            .page img {
+                max-width: 100%;
+            }
+            .page img.sel,
+            .page table.sel {
+                outline: 2px solid #0e6e66;
+            }
+            .cols {
+                display: grid;
+                gap: 18px;
+            }
+            .c2 {
+                grid-template-columns: 1fr 1fr;
+            }
+            .c3 {
+                grid-template-columns: repeat(3, 1fr);
+            }
+            #pages:not(.exp) .cols > div {
+                outline: 1px dashed #cfcac2;
+            }
+            .bind {
+                background: var(--bd);
+                border-bottom: 1px dashed var(--bdl);
+                border-radius: 2px;
+            }
+            .bind.miss {
+                color: #b3261e;
+            }
+            .page .bind {
+                background: #fff6d6;
+            }
+            .exp .bind {
+                background: none !important;
+                border: 0 !important;
+            }
+            .exp .page {
+                box-shadow: none;
+            }
+            .nb {
+                display: none;
+            }
+            @media (max-width: 1000px) {
+                main {
+                    grid-template-columns: 1fr;
+                }
+                #L,
+                #R {
+                    display: none;
+                    position: fixed;
+                    top: calc(48px + env(safe-area-inset-top, 0px));
+                    bottom: 0;
+                    z-index: 5;
+                    width: min(320px, 90vw);
+                    border: 1px solid var(--ln);
+                }
+                #L {
+                    left: 0;
+                }
+                #R {
+                    right: 0;
+                }
+                body.l #L,
+                body.r #R {
+                    display: block;
+                }
+                .nb {
+                    display: inline-flex;
+                }
+                .page {
+                    zoom: 0.6;
+                }
+            }
+            @media print {
+                @page {
+                    margin: 0;
+                }
+                header,
+                aside,
+                #tb,
+                footer,
+                #tm {
+                    display: none !important;
+                }
+                main,
+                #C,
+                #scroll {
+                    display: block !important;
+                    overflow: visible !important;
+                    height: auto !important;
+                    padding: 0 !important;
+                }
+                .page {
+                    box-shadow: none !important;
+                    margin: 0 !important;
+                    zoom: 1 !important;
+                    break-after: page;
+                }
+                .bind {
+                    background: none !important;
+                    border: 0 !important;
+                }
+            }
+        </style>
+    </head>
+    <body>
+        <header>
+            <button class="nb" id="tl" title="Show data panel">Data</button
+            ><b>ResumeBind</b>
+            <label class="btn" title="Open a saved project (.json)"
+                >Open<input id="fo" type="file" accept=".json" hidden
+            /></label>
+            <button id="sv" title="Save the TOML and layout as a project file">
+                Save
+            </button>
+            <button
+                id="pdf"
+                class="pri"
+                title="Export a text-based PDF that applicant tracking systems can read"
+            >
+                Export PDF
+            </button>
+            <button
+                id="nw"
+                title="Start with an empty document. This clears the current one."
+            >
+                New</button
+            ><button
+                id="tp"
+                class="pri"
+                title="Choose a ready-made resume template with sample data"
+            >
+                Templates</button
+            ><button id="th" title="Switch light and dark theme">Theme</button
+            ><button class="nb" id="tr" title="Show format panel">
+                Format
+            </button>
+        </header>
+        <main>
+            <aside id="L">
+                <div class="r">
+                    <button class="on" data-t="tree" title="Browse the data">
+                        Data</button
+                    ><button
+                        data-t="src"
+                        title="Edit the TOML text; the document updates as you type"
+                    >
+                        Source</button
+                    ><label class="btn " title="Upload a .toml file"
+                        >Upload TOML<input
+                            id="fu"
+                            type="file"
+                            accept=".toml,text/plain"
+                            hidden
+                    /></label>
+                </div>
+                <input
+                    id="q"
+                    type="search"
+                    placeholder="Search keys and values"
+                />
+                <div id="err" hidden></div>
+                <div id="tree"></div>
+                <textarea id="src" hidden spellcheck="false"></textarea>
+            </aside>
+            <section id="C">
+                <div id="tb">
+                    <button id="un" title="Undo (Ctrl+Z)">Undo</button
+                    ><button id="re" title="Redo (Ctrl+Y)">Redo</button>
+                    <select id="blk" title="Paragraph style">
+                        <option value="p">Paragraph</option>
+                        <option value="h1">Heading 1</option>
+                        <option value="h2">Heading 2</option>
+                        <option value="h3">Heading 3</option>
+                    </select>
+                    <button id="ul" title="Bulleted list">Bullets</button
+                    ><button id="ol" title="Numbered list">Numbers</button>
+                    <button id="tbl" title="Insert a 3×3 table">Table</button>
+                    <label
+                        class="btn"
+                        title="Insert an image from your computer"
+                        >Image<input
+                            id="fi"
+                            type="file"
+                            accept="image/*"
+                            hidden
+                    /></label>
+                    <select
+                        id="sec"
+                        title="Add a section heading such as Experience or Education"
+                    >
+                        <option value="">Add section…</option>
+                        <option>Summary</option>
+                        <option>Experience</option>
+                        <option>Education</option>
+                        <option>Skills</option>
+                        <option>Projects</option>
+                        <option>Certifications</option>
+                        <option>Links</option>
+                        <option>Section title</option></select
+                    ><button id="ap" title="Add a new page at the end">
+                        Add page
+                    </button>
+                </div>
+                <div id="scroll"><div id="pages"></div></div>
+            </section>
+            <aside id="R">
+                <h4>Data binding</h4>
+                <p class="mut" id="bn">
+                    Click a highlighted value in the document to replace or
+                    remove its binding.
+                </p>
+                <div id="bs" hidden>
+                    <input
+                        id="bp"
+                        style="width: 100%"
+                        title="Path of the TOML field, e.g. education.degree"
+                    />
+                    <div class="r">
+                        <button id="ba" title="Bind to the typed path">
+                            Replace</button
+                        ><button
+                            id="bu"
+                            title="Keep the text, drop the link to TOML"
+                        >
+                            Unbind</button
+                        ><button id="br" title="Delete this value">
+                            Remove
+                        </button>
+                    </div>
+                </div>
+                <h4>Text</h4>
+                <div class="r">
+                    <select id="ff" title="Font family">
+                        <option>Arial</option>
+                        <option>Times New Roman</option>
+                        <option>Courier New</option></select
+                    ><input
+                        id="fs"
+                        type="number"
+                        min="6"
+                        max="120"
+                        value="14"
+                        title="Font size in px"
+                    />
+                </div>
+                <div class="r">
+                    <button id="b" title="Bold"><b>B</b></button
+                    ><button id="i" title="Italic"><i>I</i></button
+                    ><button id="u" title="Underline"><u>U</u></button>
+                    <label title="Text color"
+                        >A<input id="fc" type="color" value="#111111" /></label
+                    ><label title="Background color"
+                        >Bg<input id="bc" type="color" value="#ffff99"
+                    /></label>
+                </div>
+                <div class="r">
+                    <button data-a="Left">Left</button
+                    ><button data-a="Center">Center</button
+                    ><button data-a="Right">Right</button
+                    ><button data-a="Full">Justify</button>
+                </div>
+                <h4>Link</h4>
+                <p class="mut">
+                    Readers see only the text. The address stays hidden behind
+                    it.
+                </p>
+                <input
+                    id="lt"
+                    placeholder="Text to show, e.g. LinkedIn"
+                    style="width: 100%; margin-bottom: 4px"
+                    title="The words readers will see"
+                /><input
+                    id="lu"
+                    type="url"
+                    placeholder="Address, e.g. linkedin.com/in/yourname"
+                    style="width: 100%"
+                    title="Hidden web address the text links to"
+                />
+                <div class="r">
+                    <button
+                        id="la"
+                        title="Select text and apply, or select nothing to insert the text above as a link"
+                    >
+                        Apply link</button
+                    ><button
+                        id="lr"
+                        title="Remove the link from the selected text"
+                    >
+                        Remove link
+                    </button>
+                </div>
+                <h4>Selected: <span id="sn">nothing</span></h4>
+                <div class="r">
+                    <label
+                        >W<input
+                            id="ew"
+                            type="number"
+                            title="Width in px" /></label
+                    ><label
+                        >H<input id="eh" type="number" title="Height in px"
+                    /></label>
+                </div>
+                <div class="r">
+                    <label
+                        >Margin<input
+                            id="em"
+                            type="number"
+                            title="Margin in px" /></label
+                    ><label
+                        >Padding<input
+                            id="ep"
+                            type="number"
+                            title="Padding in px"
+                    /></label>
+                </div>
+                <div class="r">
+                    <button id="mu" title="Move block up">Move up</button
+                    ><button id="md" title="Move block down">Move down</button>
+                </div>
+                <div id="is" hidden>
+                    <div class="r">
+                        <button data-i="left">Left</button
+                        ><button data-i="center">Center</button
+                        ><button data-i="right">Right</button
+                        ><button data-i="none">Inline</button>
+                    </div>
+                    <div class="r">
+                        <label
+                            >Corner<input
+                                id="er"
+                                type="number"
+                                min="0"
+                                title="Corner radius in px"
+                        /></label>
+                    </div>
+                </div>
+                <div id="ts" hidden>
+                    <div class="r">
+                        <button id="tr1">+ Row</button
+                        ><button id="tc1">+ Column</button
+                        ><button id="td1">Delete table</button>
+                    </div>
+                </div>
+                <h4>Page</h4>
+                <div class="r">
+                    <select id="ps" title="Page size">
+                        <option value="210,297">A4</option>
+                        <option value="215.9,279.4">Letter</option>
+                        <option value="148,210">A5</option>
+                        <option value="">Custom</option></select
+                    ><label
+                        >W<input
+                            id="pw"
+                            type="number"
+                            title="Page width in mm" /></label
+                    ><label
+                        >H<input
+                            id="ph"
+                            type="number"
+                            title="Page height in mm"
+                    /></label>
+                </div>
+                <div class="r">
+                    <label
+                        >Page margin (mm)<input
+                            id="pm"
+                            type="number"
+                            min="0"
+                            title="Inner page margin in mm" /></label
+                    ><button id="dp" title="Delete the current page">
+                        Delete page
+                    </button>
+                </div>
+            </aside>
+        </main>
+        <footer>
+            <span
+                >© 2026
+                <a
+                    href="https://github.com/shreyaszadge"
+                    target="_blank"
+                    rel="noopener"
+                    >shreyaszadge</a
+                >. All rights reserved.</span
+            ><a
+                href="https://github.com/shreyaszadge"
+                target="_blank"
+                rel="noopener"
+                >GitHub</a
+            ><a id="cf" href="#" target="_blank" rel="noopener" hidden
+                >☕ Buy me a coffee</a
+            >
+        </footer>
+        <div id="tm" hidden>
+            <div class="box">
+                <div class="r">
+                    <b style="margin-right: auto">Resume templates</b
+                    ><button id="tx">Close</button>
+                </div>
+                <p class="mut">
+                    Pick a template to start with sample data. Edit the TOML and
+                    the resume updates. This replaces the current document.
+                </p>
+                <div id="tg"></div>
+            </div>
+        </div>
+        <script>
+            const $ = (s) => document.querySelector(s),
+                $$ = (s) => [...document.querySelectorAll(s)],
+                P = $("#pages");
+            let data = null,
+                toml = "",
+                saved = null,
+                selEl = null,
+                selBind = null,
+                hist = [],
+                hi = -1,
+                tm;
+            const esc = (s) =>
+                String(s).replace(
+                    /[&<>"]/g,
+                    (c) =>
+                        ({
+                            "&": "&amp;",
+                            "<": "&lt;",
+                            ">": "&gt;",
+                            '"': "&quot;",
+                        })[c],
+                );
+            //<toml>
+            function parseTOML(s) {
+                let p = 0;
+                const root = {};
+                let cur = root;
+                const sp = () => {
+                    while (s[p] === " " || s[p] === "\t") p++;
+                };
+                const skip = () => {
+                    for (;;) {
+                        const c = s[p];
+                        if (c === " " || c === "\t" || c === "\n" || c === "\r")
+                            p++;
+                        else if (c === "#") {
+                            while (p < s.length && s[p] !== "\n") p++;
+                        } else break;
+                    }
+                };
+                const err = (m) => {
+                    throw new Error(
+                        "Line " + s.slice(0, p).split("\n").length + ": " + m,
+                    );
+                };
+                function str() {
+                    const q = s[p],
+                        ml = s.substr(p, 3) === q + q + q;
+                    let o = "";
+                    if (ml) {
+                        p += 3;
+                        if (s[p] === "\r") p++;
+                        if (s[p] === "\n") p++;
+                    } else p++;
+                    for (;;) {
+                        if (p >= s.length) err("Unterminated string");
+                        if (ml) {
+                            if (s.substr(p, 3) === q + q + q) {
+                                p += 3;
+                                while (s[p] === q) {
+                                    o += q;
+                                    p++;
+                                }
+                                return o;
+                            }
+                        } else if (s[p] === q) {
+                            p++;
+                            return o;
+                        } else if (s[p] === "\n") err("Unterminated string");
+                        if (q === '"' && s[p] === "\\") {
+                            p++;
+                            const c = s[p++],
+                                m = {
+                                    n: "\n",
+                                    t: "\t",
+                                    r: "\r",
+                                    '"': '"',
+                                    "\\": "\\",
+                                    b: "\b",
+                                    f: "\f",
+                                };
+                            if (c in m) o += m[c];
+                            else if (c === "u" || c === "U") {
+                                const n = c === "u" ? 4 : 8;
+                                o += String.fromCodePoint(
+                                    parseInt(s.substr(p, n), 16),
+                                );
+                                p += n;
+                            } else if (/\s/.test(c)) {
+                                while (/\s/.test(s[p])) p++;
+                            } else err("Bad escape");
+                        } else o += s[p++];
+                    }
+                }
+                function key() {
+                    const ks = [];
+                    for (;;) {
+                        sp();
+                        let k;
+                        if (s[p] === '"' || s[p] === "'") k = str();
+                        else {
+                            const m = /^[A-Za-z0-9_-]+/.exec(
+                                s.slice(p, p + 200),
+                            );
+                            if (!m) err("Invalid key");
+                            k = m[0];
+                            p += k.length;
+                        }
+                        ks.push(k);
+                        sp();
+                        if (s[p] === ".") p++;
+                        else return ks;
+                    }
+                }
+                function val() {
+                    sp();
+                    const c = s[p];
+                    if (c === '"' || c === "'") return str();
+                    if (c === "[") {
+                        p++;
+                        const a = [];
+                        for (;;) {
+                            skip();
+                            if (s[p] === "]") {
+                                p++;
+                                return a;
+                            }
+                            a.push(val());
+                            skip();
+                            if (s[p] === ",") p++;
+                            else if (s[p] !== "]") err("Expected , or ]");
+                        }
+                    }
+                    if (c === "{") {
+                        p++;
+                        const o = {};
+                        for (;;) {
+                            skip();
+                            if (s[p] === "}") {
+                                p++;
+                                return o;
+                            }
+                            kv(o);
+                            skip();
+                            if (s[p] === ",") p++;
+                            else if (s[p] !== "}") err("Expected , or }");
+                        }
+                    }
+                    const m = /^[^,\]}#\r\n]+/.exec(s.slice(p));
+                    if (!m) err("Missing value");
+                    p += m[0].length;
+                    const t = m[0].trim();
+                    if (t === "true") return true;
+                    if (t === "false") return false;
+                    if (/^[+-]?(inf|nan)$/.test(t)) return t;
+                    if (/^(0x[0-9a-f_]+|0o[0-7_]+|0b[01_]+)$/i.test(t))
+                        return Number(t.replace(/_/g, ""));
+                    if (/^[+-]?\d[\d_]*(\.\d[\d_]*)?([eE][+-]?\d+)?$/.test(t))
+                        return Number(t.replace(/_/g, ""));
+                    if (/^\d{4}-\d\d-\d\d|^\d\d:\d\d/.test(t)) return t;
+                    err("Invalid value: " + t);
+                }
+                function kv(o) {
+                    const ks = key();
+                    sp();
+                    if (s[p] !== "=") err("Expected =");
+                    p++;
+                    const v = val();
+                    let t = o;
+                    for (const k of ks.slice(0, -1)) {
+                        t = t[k] || (t[k] = {});
+                        if (Array.isArray(t)) t = t[t.length - 1];
+                    }
+                    t[ks[ks.length - 1]] = v;
+                }
+                for (;;) {
+                    skip();
+                    if (p >= s.length) break;
+                    if (s[p] === "[") {
+                        const a = s[p + 1] === "[";
+                        p += a ? 2 : 1;
+                        const ks = key();
+                        sp();
+                        if (s[p] !== "]") err("Expected ]");
+                        p += a ? 2 : 1;
+                        let t = root;
+                        for (let j = 0; j < ks.length; j++) {
+                            const k = ks[j];
+                            if (j === ks.length - 1 && a) {
+                                const n = {};
+                                (t[k] || (t[k] = [])).push(n);
+                                t = n;
+                            } else {
+                                t = t[k] || (t[k] = {});
+                                if (Array.isArray(t)) t = t[t.length - 1];
+                            }
+                        }
+                        cur = t;
+                    } else kv(cur);
+                    sp();
+                    if (s[p] === "\r") p++;
+                    if (p < s.length && s[p] !== "\n" && s[p] !== "#")
+                        err("Unexpected text");
+                }
+                return root;
+            }
+            //</toml>
+            const get = (p, o = data) => {
+                for (const k of p.match(/[^.[\]]+/g) || []) {
+                    if (o == null) return;
+                    o = o[k];
+                }
+                return o;
+            };
+            const fmt = (v) =>
+                v == null
+                    ? ""
+                    : Array.isArray(v)
+                      ? v.map(fmt).join(", ")
+                      : typeof v === "object"
+                        ? Object.keys(v)
+                              .map((k) => k + ": " + fmt(v[k]))
+                              .join("; ")
+                        : String(v);
+            function node(k, v, p) {
+                const o = v && typeof v === "object",
+                    n = document.createElement("div"),
+                    r = document.createElement("div");
+                n.className = "n" + (o ? " g" : "");
+                n.dataset.k = (k + " " + (o ? "" : fmt(v))).toLowerCase();
+                r.className = "row";
+                r.draggable = true;
+                r.title = "Drag into the document";
+                r.innerHTML =
+                    '<span class="car">' +
+                    (o ? "▸" : "") +
+                    "</span><b>" +
+                    esc(k) +
+                    "</b><i>" +
+                    (o
+                        ? Array.isArray(v)
+                            ? "[" + v.length + "]"
+                            : "{" + Object.keys(v).length + "}"
+                        : esc(fmt(v))) +
+                    "</i>";
+                r.ondragstart = (e) => {
+                    e.dataTransfer.setData("text/x-path", p);
+                    e.dataTransfer.effectAllowed = "copy";
+                };
+                n.append(r);
+                if (o) {
+                    const kd = document.createElement("div");
+                    kd.className = "kids";
+                    (Array.isArray(v)
+                        ? v.map((x, i) =>
+                              node("[" + i + "]", x, p + "[" + i + "]"),
+                          )
+                        : Object.keys(v).map((k2) =>
+                              node(k2, v[k2], p ? p + "." + k2 : k2),
+                          )
+                    ).forEach((c) => kd.append(c));
+                    n.append(kd);
+                    r.onclick = () => n.classList.toggle("open");
+                }
+                return n;
+            }
+            function tree() {
+                const t = $("#tree");
+                t.innerHTML = "";
+                if (!data) {
+                    t.innerHTML =
+                        '<p class="mut">Upload a TOML file to browse its data and drag values into the document.</p><button id="smp">Try a sample file</button>';
+                    $("#smp").onclick = () =>
+                        setTOML(
+                            'name = "Shreyas"\ntitle = "Software Engineer"\nskills = ["Java", "React", "SQL"]\n\n[education]\ndegree = "Computer Engineering"\ncollege = "Pune University"\npassout_year = 2023\n\n[[jobs]]\ncompany = "Acme Corp"\nrole = "Developer"\nyears = 2\n\n[[jobs]]\ncompany = "Beta Labs"\nrole = "Intern"\nyears = 1\n',
+                        );
+                    return;
+                }
+                Object.keys(data).forEach((k) => t.append(node(k, data[k], k)));
+                filt();
+            }
+            function filt() {
+                const q = $("#q").value.toLowerCase();
+                const f = (n, force) => {
+                    const own = !q || n.dataset.k.includes(q);
+                    let any = false;
+                    const kd = n.querySelector(":scope>.kids");
+                    if (kd)
+                        for (const c of kd.children)
+                            if (f(c, force || own)) any = true;
+                    const v = own || force || any;
+                    n.hidden = !v;
+                    if (q && kd && any) n.classList.add("open");
+                    return v;
+                };
+                $$("#tree>.n").forEach((n) => f(n, false));
+            }
+            function setTOML(t, quiet) {
+                try {
+                    const d = parseTOML(t);
+                    data = d;
+                    toml = t;
+                    $("#err").hidden = true;
+                    tree();
+                    refresh();
+                    try {
+                        localStorage.setItem("tde.toml", t);
+                    } catch (e) {}
+                    if (document.activeElement !== $("#src"))
+                        $("#src").value = t;
+                    if (!quiet) change();
+                } catch (e) {
+                    $("#err").hidden = false;
+                    $("#err").textContent =
+                        "TOML error: " +
+                        e.message +
+                        " (showing the last valid data)";
+                }
+            }
+            function refresh() {
+                $$(".bind", P).forEach((b) => {
+                    const v = data ? get(b.dataset.path) : undefined,
+                        t =
+                            v === undefined
+                                ? "⟨missing: " + b.dataset.path + "⟩"
+                                : fmt(v);
+                    b.classList.toggle("miss", v === undefined);
+                    if (b.textContent !== t) b.textContent = t;
+                });
+            }
+            const chip = (p) =>
+                '<span class="bind" data-path="' +
+                esc(p) +
+                '" contenteditable="false">' +
+                esc(fmt(get(p))) +
+                "</span>\u200b";
+            function dropHTML(p) {
+                const v = get(p);
+                if (
+                    Array.isArray(v) &&
+                    v.length &&
+                    v.every(
+                        (x) => x && typeof x === "object" && !Array.isArray(x),
+                    )
+                ) {
+                    const ks = [...new Set(v.flatMap(Object.keys))];
+                    return (
+                        "<table><tr>" +
+                        ks.map((k) => "<th>" + esc(k) + "</th>").join("") +
+                        "</tr>" +
+                        v
+                            .map(
+                                (x, i) =>
+                                    "<tr>" +
+                                    ks
+                                        .map(
+                                            (k) =>
+                                                "<td>" +
+                                                chip(p + "[" + i + "]." + k) +
+                                                "</td>",
+                                        )
+                                        .join("") +
+                                    "</tr>",
+                            )
+                            .join("") +
+                        "</table><p><br></p>"
+                    );
+                }
+                if (v && typeof v === "object" && !Array.isArray(v))
+                    return (
+                        "<table>" +
+                        Object.keys(v)
+                            .map(
+                                (k) =>
+                                    "<tr><th>" +
+                                    esc(k) +
+                                    "</th><td>" +
+                                    chip(p + "." + k) +
+                                    "</td></tr>",
+                            )
+                            .join("") +
+                        "</table><p><br></p>"
+                    );
+                return chip(p);
+            }
+            function caret(x, y) {
+                if (document.caretRangeFromPoint)
+                    return document.caretRangeFromPoint(x, y);
+                const c = document.caretPositionFromPoint(x, y),
+                    r = document.createRange();
+                r.setStart(c.offsetNode, c.offset);
+                return r;
+            }
+            P.addEventListener("dragover", (e) => {
+                if (e.dataTransfer.types.includes("text/x-path"))
+                    e.preventDefault();
+            });
+            P.addEventListener("drop", (e) => {
+                const p = e.dataTransfer.getData("text/x-path");
+                if (!p) return;
+                e.preventDefault();
+                const pg = e.target.closest(".page");
+                if (!pg) return;
+                const b = e.target.closest(".bind");
+                if (b) {
+                    b.dataset.path = p;
+                    refresh();
+                    change();
+                    return;
+                }
+                const r = caret(e.clientX, e.clientY);
+                pg.focus();
+                const s = getSelection();
+                s.removeAllRanges();
+                s.addRange(r);
+                document.execCommand("insertHTML", false, dropHTML(p));
+                refresh();
+                change();
+            });
+            P.addEventListener("paste", (e) => {
+                e.preventDefault();
+                document.execCommand(
+                    "insertText",
+                    false,
+                    e.clipboardData.getData("text/plain"),
+                );
+            });
+            P.addEventListener("input", change);
+            P.addEventListener("click", (e) => {
+                const t =
+                    e.target.closest(".bind") ||
+                    (e.target.tagName === "IMG" ? e.target : null);
+                if (t) {
+                    const r = document.createRange();
+                    r.selectNode(t);
+                    const s = getSelection();
+                    s.removeAllRanges();
+                    s.addRange(r);
+                }
+            });
+            const nodeEl = (n) => (n.nodeType === 1 ? n : n.parentElement);
+            document.addEventListener("selectionchange", () => {
+                const s = getSelection();
+                if (!s.rangeCount) return;
+                const r = s.getRangeAt(0),
+                    el = nodeEl(r.commonAncestorContainer);
+                if (!el || !el.closest(".page")) return;
+                saved = r.cloneRange();
+                let t = el;
+                const c = r.startContainer.childNodes[r.startOffset];
+                if (
+                    r.startContainer === r.endContainer &&
+                    r.endOffset - r.startOffset === 1 &&
+                    c &&
+                    c.nodeType === 1
+                )
+                    t = c;
+                selBind = t.closest(".bind");
+                selEl = t.closest("img,table,li,h1,h2,h3,p,.cols,.page");
+                $$(".sel", P).forEach((x) => x.classList.remove("sel"));
+                if (selEl && /^(IMG|TABLE)$/.test(selEl.tagName))
+                    selEl.classList.add("sel");
+                sync();
+            });
+            function sync() {
+                const ln = saved && nodeEl(saved.startContainer).closest("a");
+                if (ln) {
+                    $("#lu").value = ln.getAttribute("href") || "";
+                    $("#lt").value = ln.textContent;
+                }
+                $("#bn").hidden = !!selBind;
+                $("#bs").hidden = !selBind;
+                if (selBind) $("#bp").value = selBind.dataset.path;
+                const e = selEl;
+                $("#sn").textContent = !e
+                    ? "nothing"
+                    : e.classList.contains("page")
+                      ? "page"
+                      : e.tagName === "IMG"
+                        ? "image"
+                        : e.tagName === "TABLE"
+                          ? "table"
+                          : e.tagName === "LI"
+                            ? "list item"
+                            : e.classList.contains("cols")
+                              ? "columns"
+                              : /^H/.test(e.tagName)
+                                ? "heading"
+                                : "paragraph";
+                $("#is").hidden = !e || e.tagName !== "IMG";
+                $("#ts").hidden =
+                    !e ||
+                    (e.tagName !== "TABLE" &&
+                        !(
+                            saved &&
+                            nodeEl(saved.startContainer).closest("td,th")
+                        ));
+                if (e) {
+                    const c = getComputedStyle(e);
+                    $("#ew").value = Math.round(e.offsetWidth);
+                    $("#eh").value = Math.round(e.offsetHeight);
+                    $("#em").value = parseInt(c.marginTop) || 0;
+                    $("#ep").value = parseInt(c.paddingTop) || 0;
+                    $("#fs").value =
+                        Math.round(
+                            parseFloat(getComputedStyle(selBind || e).fontSize),
+                        ) || 14;
+                }
+            }
+            const ser = () => {
+                const c = P.cloneNode(true);
+                c.querySelectorAll(".sel").forEach((x) =>
+                    x.classList.remove("sel"),
+                );
+                return c.innerHTML;
+            };
+            const lay = () => ({
+                w: P.style.getPropertyValue("--pw") || "210mm",
+                h: P.style.getPropertyValue("--ph") || "297mm",
+                m: P.style.getPropertyValue("--pp") || "20mm",
+                html: ser(),
+            });
+            function applyLayout(l) {
+                P.style.setProperty("--pw", l.w);
+                P.style.setProperty("--ph", l.h);
+                P.style.setProperty("--pp", l.m);
+                P.innerHTML = l.html || "";
+                saved = selEl = selBind = null;
+                if (!P.children.length) addPage();
+                pgUI();
+                refresh();
+                hist = [];
+                hi = -1;
+                snap();
+            }
+            function pgUI() {
+                $("#pw").value =
+                    parseFloat(P.style.getPropertyValue("--pw")) || 210;
+                $("#ph").value =
+                    parseFloat(P.style.getPropertyValue("--ph")) || 297;
+                $("#pm").value =
+                    parseFloat(P.style.getPropertyValue("--pp")) || 20;
+            }
+            function addPage(h) {
+                const d = document.createElement("div");
+                d.className = "page";
+                d.contentEditable = "true";
+                d.innerHTML = h || "<p><br></p>";
+                P.append(d);
+                return d;
+            }
+            function snap() {
+                const h = ser();
+                if (hist[hi] === h) return;
+                hist = hist.slice(0, hi + 1);
+                hist.push(h);
+                if (hist.length > 80) hist.shift();
+                hi = hist.length - 1;
+            }
+            function change() {
+                clearTimeout(tm);
+                tm = setTimeout(() => {
+                    snap();
+                    try {
+                        localStorage.setItem(
+                            "tde.layout",
+                            JSON.stringify(lay()),
+                        );
+                    } catch (e) {}
+                }, 350);
+            }
+            function go(d) {
+                clearTimeout(tm);
+                snap();
+                const n = hi + d;
+                if (n < 0 || n >= hist.length) return;
+                hi = n;
+                P.innerHTML = hist[hi];
+                refresh();
+                selEl = selBind = saved = null;
+                sync();
+                change();
+            }
+            document.addEventListener("keydown", (e) => {
+                if (
+                    !(e.ctrlKey || e.metaKey) ||
+                    !e.target.closest ||
+                    !e.target.closest(".page")
+                )
+                    return;
+                const k = e.key.toLowerCase();
+                if (k === "z") {
+                    e.preventDefault();
+                    go(e.shiftKey ? 1 : -1);
+                } else if (k === "y") {
+                    e.preventDefault();
+                    go(1);
+                }
+            });
+            document.addEventListener("mousedown", (e) => {
+                if (e.target.closest("button") && !e.target.closest("#L"))
+                    e.preventDefault();
+            });
+            function restore() {
+                if (
+                    !saved ||
+                    !P.contains(saved.startContainer) ||
+                    !P.contains(saved.endContainer)
+                ) {
+                    const pg = P.lastElementChild,
+                        r = document.createRange();
+                    r.selectNodeContents(pg);
+                    r.collapse(false);
+                    saved = r;
+                }
+                nodeEl(saved.startContainer)
+                    .closest(".page")
+                    .focus({ preventScroll: true });
+                const s = getSelection();
+                s.removeAllRanges();
+                s.addRange(saved);
+            }
+            const SM = {
+                foreColor: "color",
+                hiliteColor: "backgroundColor",
+                fontName: "fontFamily",
+            };
+            function cmd(c, v) {
+                const k = SM[c];
+                if (k && selBind) {
+                    selBind.style[k] = v;
+                    change();
+                    return;
+                }
+                if (
+                    k &&
+                    saved &&
+                    saved.collapsed &&
+                    selEl &&
+                    P.contains(selEl)
+                ) {
+                    selEl.style[k] = v;
+                    change();
+                    return;
+                }
+                restore();
+                document.execCommand("styleWithCSS", false, true);
+                document.execCommand(c, false, v);
+                change();
+            }
+            function size(px) {
+                const v = px + "px";
+                if (!(px > 0)) return;
+                if (selBind) {
+                    selBind.style.fontSize = v;
+                    change();
+                    return;
+                }
+                if (saved && saved.collapsed && selEl && P.contains(selEl)) {
+                    selEl.style.fontSize = v;
+                    change();
+                    return;
+                }
+                restore();
+                document.execCommand("styleWithCSS", false, false);
+                document.execCommand("fontSize", false, "7");
+                $$('font[size="7"],span[style*="xxx-large"]', P).forEach(
+                    (f) => {
+                        let s = f;
+                        if (f.tagName === "FONT") {
+                            s = document.createElement("span");
+                            s.innerHTML = f.innerHTML;
+                            f.replaceWith(s);
+                        }
+                        s.style.fontSize = v;
+                        s.querySelectorAll('[style*="font-size"]').forEach(
+                            (x) => (x.style.fontSize = ""),
+                        );
+                    },
+                );
+                change();
+            }
+            function ins(h) {
+                restore();
+                document.execCommand("insertHTML", false, h);
+                refresh();
+                change();
+            }
+            const on = (id, ev, fn) => $(id).addEventListener(ev, fn);
+            on("#un", "click", () => go(-1));
+            on("#re", "click", () => go(1));
+            on("#blk", "change", (e) =>
+                cmd("formatBlock", "<" + e.target.value + ">"),
+            );
+            on("#ul", "click", () => cmd("insertUnorderedList"));
+            on("#ol", "click", () => cmd("insertOrderedList"));
+            on("#tbl", "click", () =>
+                ins(
+                    "<table><tr><th>Header</th><th>Header</th><th>Header</th></tr>" +
+                        "<tr><td><br></td><td><br></td><td><br></td></tr>".repeat(
+                            2,
+                        ) +
+                        "</table><p><br></p>",
+                ),
+            );
+
+            on("#fi", "change", (e) => {
+                const f = e.target.files[0];
+                if (!f) return;
+                const r = new FileReader();
+                r.onload = () =>
+                    ins('<img src="' + r.result + '" style="width:240px">');
+                r.readAsDataURL(f);
+                e.target.value = "";
+            });
+            on("#sec", "change", (e) => {
+                const v = e.target.value;
+                e.target.value = "";
+                if (v) ins('<h2 class="sec">' + esc(v) + "</h2><p><br></p>");
+            });
+            const fixUrl = (u) => {
+                u = u.trim();
+                return !u
+                    ? ""
+                    : /^(https?:|mailto:|tel:)/i.test(u)
+                      ? u
+                      : u.includes("@") && !u.includes("/")
+                        ? "mailto:" + u
+                        : "https://" + u;
+            };
+            on("#la", "click", () => {
+                const u = fixUrl($("#lu").value);
+                if (!u) return;
+                const t = $("#lt").value.trim();
+                restore();
+                const ln = nodeEl(saved.startContainer).closest("a");
+                if (ln && saved.collapsed) {
+                    ln.setAttribute("href", u);
+                    if (t) ln.textContent = t;
+                    change();
+                    return;
+                }
+                if (saved.collapsed) {
+                    let h = u;
+                    try {
+                        h = new URL(u).hostname.replace(/^www\./, "");
+                    } catch (e) {}
+                    document.execCommand(
+                        "insertHTML",
+                        false,
+                        '<a href="' +
+                            esc(u) +
+                            '">' +
+                            esc(t || h) +
+                            "</a>\u200b",
+                    );
+                } else document.execCommand("createLink", false, u);
+                change();
+            });
+            on("#lr", "click", () => {
+                restore();
+                document.execCommand("unlink");
+                change();
+            });
+            on("#ap", "click", () => {
+                addPage();
+                change();
+            });
+            on("#dp", "click", () => {
+                const pg = selEl && selEl.closest(".page");
+                if (pg && P.children.length > 1) {
+                    pg.remove();
+                    selEl = null;
+                    change();
+                }
+            });
+            on("#ff", "change", (e) => cmd("fontName", e.target.value));
+            on("#fs", "change", (e) => size(+e.target.value));
+            on("#b", "click", () => cmd("bold"));
+            on("#i", "click", () => cmd("italic"));
+            on("#u", "click", () => cmd("underline"));
+            on("#fc", "change", (e) => cmd("foreColor", e.target.value));
+            on("#bc", "change", (e) => cmd("hiliteColor", e.target.value));
+            $$("[data-a]").forEach(
+                (b) => (b.onclick = () => cmd("justify" + b.dataset.a)),
+            );
+            const box = (id, prop) =>
+                on(id, "change", (e) => {
+                    if (!selEl) return;
+                    selEl.style[prop] =
+                        e.target.value === "" ? "" : e.target.value + "px";
+                    change();
+                });
+            box("#ew", "width");
+            box("#eh", "height");
+            box("#em", "margin");
+            box("#ep", "padding");
+            box("#er", "borderRadius");
+            $$("[data-i]").forEach(
+                (b) =>
+                    (b.onclick = () => {
+                        if (!selEl || selEl.tagName !== "IMG") return;
+                        const v = b.dataset.i,
+                            s = selEl.style;
+                        s.float = v === "left" || v === "right" ? v : "none";
+                        s.display = v === "center" ? "block" : "";
+                        s.margin =
+                            v === "center"
+                                ? "0 auto"
+                                : v === "left"
+                                  ? "0 12px 8px 0"
+                                  : v === "right"
+                                    ? "0 0 8px 12px"
+                                    : "";
+                        change();
+                    }),
+            );
+            const mv = (d) => {
+                const t = selEl && selEl.closest(".page>*");
+                if (!t) return;
+                const o =
+                    d < 0 ? t.previousElementSibling : t.nextElementSibling;
+                if (!o) return;
+                d < 0 ? o.before(t) : o.after(t);
+                change();
+            };
+            on("#mu", "click", () => mv(-1));
+            on("#md", "click", () => mv(1));
+            function tb(op) {
+                const td =
+                    saved && nodeEl(saved.startContainer).closest("td,th");
+                if (!td) return;
+                const tr = td.parentElement,
+                    t = td.closest("table"),
+                    i = td.cellIndex;
+                if (op === "r") {
+                    const n = tr.cloneNode(true);
+                    n.querySelectorAll("th,td").forEach((c) => {
+                        const d = document.createElement("td");
+                        d.innerHTML = "<br>";
+                        c.replaceWith(d);
+                    });
+                    tr.after(n);
+                }
+                if (op === "c")
+                    [...t.rows].forEach((r) => {
+                        const c = document.createElement("td");
+                        c.innerHTML = "<br>";
+                        r.cells[i].after(c);
+                    });
+                if (op === "d") t.remove();
+                change();
+            }
+            on("#tr1", "click", () => tb("r"));
+            on("#tc1", "click", () => tb("c"));
+            on("#td1", "click", () => tb("d"));
+            const bnd = () => {
+                if (selBind) {
+                    selBind.dataset.path = $("#bp").value.trim();
+                    refresh();
+                    change();
+                }
+            };
+            on("#ba", "click", bnd);
+            on("#bp", "keydown", (e) => {
+                if (e.key === "Enter") bnd();
+            });
+            on("#bu", "click", () => {
+                if (selBind) {
+                    const t = document.createTextNode(selBind.textContent);
+                    selBind.replaceWith(t);
+                    selBind = null;
+                    sync();
+                    change();
+                }
+            });
+            on("#br", "click", () => {
+                if (selBind) {
+                    selBind.remove();
+                    selBind = null;
+                    sync();
+                    change();
+                }
+            });
+            on("#ps", "change", (e) => {
+                if (e.target.value) {
+                    const [w, h] = e.target.value.split(",");
+                    $("#pw").value = w;
+                    $("#ph").value = h;
+                    pgSz();
+                }
+            });
+            const pgSz = () => {
+                P.style.setProperty("--pw", $("#pw").value + "mm");
+                P.style.setProperty("--ph", $("#ph").value + "mm");
+                P.style.setProperty("--pp", $("#pm").value + "mm");
+                change();
+            };
+            ["#pw", "#ph", "#pm"].forEach((i) => on(i, "change", pgSz));
+            $$("[data-t]").forEach(
+                (b) =>
+                    (b.onclick = () => {
+                        $$("[data-t]").forEach((x) =>
+                            x.classList.toggle("on", x === b),
+                        );
+                        $("#tree").hidden = b.dataset.t !== "tree";
+                        $("#src").hidden = b.dataset.t !== "src";
+                        $("#q").hidden = b.dataset.t !== "tree";
+                    }),
+            );
+            on("#q", "input", filt);
+            let st;
+            on("#src", "input", (e) => {
+                clearTimeout(st);
+                st = setTimeout(() => setTOML(e.target.value), 400);
+            });
+            on("#fu", "change", (e) => {
+                const f = e.target.files[0];
+                if (f) f.text().then(setTOML);
+                e.target.value = "";
+            });
+            function dl(name, data) {
+                const g =
+                    window.claude && claude.use
+                        ? claude.use("downloads").catch(() => null)
+                        : Promise.resolve(null);
+                return g.then((d) => {
+                    if (d) return d.save({ filename: name, data });
+                    const b = data instanceof Blob ? data : new Blob([data]),
+                        a = document.createElement("a");
+                    a.href = URL.createObjectURL(b);
+                    a.download = name;
+                    document.body.append(a);
+                    a.click();
+                    a.remove();
+                    setTimeout(() => URL.revokeObjectURL(a.href), 4000);
+                });
+            }
+            on("#sv", "click", () => {
+                clearTimeout(tm);
+                snap();
+                dl(
+                    "project.docproj.json",
+                    JSON.stringify(
+                        { format: "toml-doc-v1", toml: toml, layout: lay() },
+                        null,
+                        1,
+                    ),
+                ).catch((e) => {
+                    if (e)
+                        alert(
+                            "Saving was cancelled or is unavailable here. Your work is still autosaved in this browser.",
+                        );
+                });
+            });
+            on("#fo", "change", (e) => {
+                const f = e.target.files[0];
+                if (!f) return;
+                f.text().then((t) => {
+                    try {
+                        const j = JSON.parse(t);
+                        if (j.toml != null) setTOML(j.toml, true);
+                        applyLayout(j.layout);
+                        change();
+                    } catch (x) {
+                        alert("This file is not a valid project.");
+                    }
+                });
+                e.target.value = "";
+            });
+            on("#pdf", "click", async () => {
+                const b = $("#pdf");
+                b.disabled = true;
+                b.textContent = "Exporting…";
+                try {
+                    if (!window.jspdf) {
+                        window.print();
+                        return;
+                    }
+                    const w =
+                            parseFloat(P.style.getPropertyValue("--pw")) || 210,
+                        h = parseFloat(P.style.getPropertyValue("--ph")) || 297,
+                        m = parseFloat(P.style.getPropertyValue("--pp")) || 20,
+                        pdf = new jspdf.jsPDF({
+                            unit: "mm",
+                            format: [w, h],
+                            orientation: w > h ? "l" : "p",
+                        });
+                    let y = m,
+                        skip = false;
+                    const fam = (cs) => {
+                        const f = cs.fontFamily.split(",")[0].toLowerCase();
+                        return /courier|mono/.test(f)
+                            ? "courier"
+                            : /times|georgia|garamond|palatino/.test(f)
+                              ? "times"
+                              : "helvetica";
+                    };
+                    const line = (raw, cs, o = {}) => {
+                        const fs = parseFloat(cs.fontSize) * 0.75,
+                            lh = fs * 0.3528 * 1.35,
+                            mw = w - 2 * m - (o.ind || 0),
+                            al = cs.textAlign,
+                            x =
+                                m +
+                                (o.ind || 0) +
+                                (al === "center"
+                                    ? mw / 2
+                                    : al === "right"
+                                      ? mw
+                                      : 0),
+                            it = cs.fontStyle === "italic";
+                        pdf.setFont(
+                            fam(cs),
+                            o.b && it
+                                ? "bolditalic"
+                                : o.b
+                                  ? "bold"
+                                  : it
+                                    ? "italic"
+                                    : "normal",
+                        );
+                        pdf.setFontSize(fs);
+                        const t =
+                            (o.pre || "") +
+                            String(raw)
+                                .replace(/[\u200b\r]/g, "")
+                                .replace(/\u20B9/g, "Rs.")
+                                .replace(
+                                    /[^\n\x20-\x7E\xA0-\xFF\u2018\u2019\u201C\u201D\u2013\u2014\u2022\u2026]/g,
+                                    "?",
+                                );
+                        t.split("\n")
+                            .map((s) => s.replace(/[ \t]+/g, " ").trim())
+                            .filter(Boolean)
+                            .forEach((s) =>
+                                pdf.splitTextToSize(s, mw).forEach((l) => {
+                                    if (y + lh > h - m) {
+                                        pdf.addPage([w, h]);
+                                        y = m;
+                                    }
+                                    pdf.text(l, x, y + lh * 0.8, {
+                                        align:
+                                            al === "center"
+                                                ? "center"
+                                                : al === "right"
+                                                  ? "right"
+                                                  : "left",
+                                    });
+                                    (o.links || []).forEach((k) => {
+                                        const i = l.indexOf(k.t);
+                                        if (i < 0) return;
+                                        const tw = pdf.getTextWidth(l),
+                                            x0 =
+                                                al === "center"
+                                                    ? x - tw / 2
+                                                    : al === "right"
+                                                      ? x - tw
+                                                      : x;
+                                        pdf.link(
+                                            x0 +
+                                                pdf.getTextWidth(l.slice(0, i)),
+                                            y,
+                                            pdf.getTextWidth(k.t),
+                                            lh,
+                                            { url: k.u },
+                                        );
+                                    });
+                                    y += lh;
+                                }),
+                            );
+                        y += o.gap ?? 1.5;
+                    };
+                    const bold = (el, cs) =>
+                        Number(cs.fontWeight) >= 600 ||
+                        cs.fontWeight === "bold" ||
+                        [...el.querySelectorAll("b,strong")].reduce(
+                            (a, x) => a + x.innerText.length,
+                            0,
+                        ) /
+                            ((el.innerText || "").length || 1) >
+                            0.7;
+                    const lk = (el) =>
+                        [...el.querySelectorAll("a[href]")]
+                            .map((a) => ({
+                                t: (a.innerText || "")
+                                    .replace(/\s+/g, " ")
+                                    .trim(),
+                                u: a.href,
+                            }))
+                            .filter((k) => k.t);
+                    const blk = (el) => {
+                        const cs = getComputedStyle(el);
+                        line(el.innerText || "", cs, {
+                            b: bold(el, cs),
+                            gap: /^H/.test(el.tagName) ? 2.5 : 1.5,
+                            links: lk(el),
+                        });
+                    };
+                    const walk = (el) => {
+                        const t = el.tagName;
+                        if (t === "IMG") {
+                            skip = true;
+                            return;
+                        }
+                        if (t === "UL" || t === "OL") {
+                            [...el.children].forEach((li, i) => {
+                                const cs = getComputedStyle(li);
+                                line(li.innerText || "", cs, {
+                                    pre: t === "OL" ? i + 1 + ". " : "\u2022 ",
+                                    ind: 5,
+                                    gap: 0.8,
+                                    b: bold(li, cs),
+                                    links: lk(li),
+                                });
+                            });
+                            y += 1;
+                            return;
+                        }
+                        if (t === "TABLE") {
+                            [...el.rows].forEach((r) => {
+                                const c = [...r.cells];
+                                if (c.length)
+                                    line(
+                                        c
+                                            .map((x) =>
+                                                (x.innerText || "")
+                                                    .replace(/\s+/g, " ")
+                                                    .trim(),
+                                            )
+                                            .filter(Boolean)
+                                            .join(" | "),
+                                        getComputedStyle(c[0]),
+                                        { b: c[0].tagName === "TH", gap: 1 },
+                                    );
+                            });
+                            y += 1.5;
+                            return;
+                        }
+                        if (
+                            !/^(P|H\d|LI)$/.test(t) &&
+                            el.querySelector("p,h1,h2,h3,ul,ol,table,div,img")
+                        ) {
+                            [...el.children].forEach(walk);
+                            return;
+                        }
+                        if (el.querySelector("img")) skip = true;
+                        blk(el);
+                    };
+                    $$(".page", P).forEach((pg, i) => {
+                        if (i) {
+                            pdf.addPage([w, h]);
+                            y = m;
+                        }
+                        [...pg.childNodes].forEach((n) =>
+                            n.nodeType === 3
+                                ? line(n.textContent, getComputedStyle(pg))
+                                : n.nodeType === 1 && walk(n),
+                        );
+                    });
+                    await dl("resume.pdf", pdf.output("blob"));
+                    if (skip)
+                        alert(
+                            "Images were left out of the PDF so applicant tracking systems can read it.",
+                        );
+                } catch (e) {
+                    if (e && e.code !== "declined") alert("PDF export failed.");
+                } finally {
+                    b.disabled = false;
+                    b.textContent = "Export PDF";
+                }
+            });
+            on("#th", "click", () => {
+                const r = document.documentElement,
+                    d =
+                        (r.dataset.theme ||
+                            (matchMedia("(prefers-color-scheme: dark)").matches
+                                ? "dark"
+                                : "light")) === "dark";
+                r.dataset.theme = d ? "light" : "dark";
+                try {
+                    localStorage.setItem("tde.theme", r.dataset.theme);
+                } catch (e) {}
+            });
+            on("#tl", "click", () => {
+                document.body.classList.toggle("l");
+                document.body.classList.remove("r");
+            });
+            on("#tr", "click", () => {
+                document.body.classList.toggle("r");
+                document.body.classList.remove("l");
+            });
+            /*TPL*/
+            const av = (bg, hair, shirt, skin, lg) =>
+                "data:image/svg+xml;utf8," +
+                encodeURIComponent(
+                    '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 120"><rect width="120" height="120" fill="' +
+                        bg +
+                        '"/><path d="M18 120c2-28 20-40 42-40s40 12 42 40z" fill="' +
+                        shirt +
+                        '"/><rect x="52" y="62" width="16" height="22" rx="7" fill="' +
+                        skin +
+                        '"/>' +
+                        (lg
+                            ? '<path d="M34 44c0-22 12-30 26-30s26 8 26 30v34c0 5-5 8-9 5V50H43v33c-4 3-9 0-9-5z" fill="' +
+                              hair +
+                              '"/>'
+                            : "") +
+                        '<circle cx="60" cy="48" r="21" fill="' +
+                        skin +
+                        '"/><path d="M38 46c0-17 11-26 22-26s22 9 22 26c-4-8-11-12-22-12s-18 4-22 12z" fill="' +
+                        hair +
+                        '"/><circle cx="52" cy="50" r="2" fill="#2b2b2b"/><circle cx="68" cy="50" r="2" fill="#2b2b2b"/><path d="M53 58q7 5 14 0" stroke="#7a4a3a" stroke-width="2" fill="none" stroke-linecap="round"/></svg>',
+                );
+            const A = [
+                av("#99f6e4", "#1f2937", "#0f766e", "#e8b894"),
+                av("#ffd9c0", "#2b1b17", "#4a1d4f", "#f1c9a5", 1),
+                av("#bbf7d0", "#3b2a1a", "#166534", "#e0ac86"),
+            ];
+            const K = (p) => chip(p),
+                ul = (p) =>
+                    "<ul>" +
+                    get(p)
+                        .map((_, j) => "<li>" + K(p + "[" + j + "]") + "</li>")
+                        .join("") +
+                    "</ul>",
+                each = (a, f) =>
+                    get(a)
+                        .map((x, i) => f(a + "[" + i + "].", x, i))
+                        .join(""),
+                S = (t, n) =>
+                    "<h2" + (n ? ' class="' + n + '"' : "") + ">" + t + "</h2>";
+            const DEMO = `name = "Riya Sharma"
+title = "Financial Analyst"
+email = "riya.sharma@example.com"
+phone = "+91 98765 43210"
+location = "Pune, Maharashtra"
+linkedin = "linkedin.com/in/riya-sharma-demo"
+summary = "Finance professional with 2+ years of experience in budgeting, forecasting and management reporting. Skilled at turning complex data into clear recommendations that support business decisions."
+skills = ["Financial Modelling", "Forecasting and Budgeting", "Variance Analysis", "Advanced Excel", "Power BI", "SQL"]
+certifications = ["Advanced Excel Certification, Microsoft", "Financial Modelling and Valuation, Coursera"]
+
+[education]
+degree = "MBA, Finance"
+college = "Pune University"
+passout_year = 2023
+
+[[experience]]
+company = "Northwind Finance"
+role = "Financial Analyst"
+period = "2023 - Present"
+highlights = ["Build monthly forecasts and variance reports for three business units, improving forecast accuracy by 12%.", "Automate recurring Excel reports with Power BI dashboards, saving about 10 hours every month.", "Present budget reviews to senior managers and recommend cost savings of 8%."]
+
+[[experience]]
+company = "Contoso Accounts"
+role = "Finance Intern"
+period = "2022 - 2023"
+highlights = ["Prepared bank and ledger reconciliations with zero unresolved items at quarter end.", "Supported the quarterly close by collecting and checking data from five departments."]
+`;
+            const T2 = `name = "Arjun Mehta"
+title = "Full Stack Developer"
+email = "arjun.mehta@example.com"
+phone = "+91 91234 56789"
+location = "Bengaluru, Karnataka"
+github = "github.com/arjun-demo"
+summary = "Developer with 3 years of experience building fast, accessible web apps with React and Node.js. Enjoys clean code, small teams and shipping every week."
+skills = ["JavaScript", "TypeScript", "React", "Node.js", "PostgreSQL", "Docker", "AWS"]
+languages = ["English", "Hindi", "Kannada"]
+
+[education]
+degree = "B.E., Computer Science"
+college = "VTU, Bengaluru"
+year = "2021"
+
+[[experience]]
+company = "Pixelforge Labs"
+role = "Software Engineer"
+period = "2022 - Present"
+highlights = ["Built a React dashboard used by 15,000 customers, cutting page load time by 40%.", "Designed REST APIs in Node.js and PostgreSQL that handle 2 million requests a day.", "Mentor two junior developers and run weekly code reviews."]
+
+[[experience]]
+company = "Greenleaf Tech"
+role = "Junior Developer"
+period = "2021 - 2022"
+highlights = ["Fixed 120+ bugs and shipped 8 customer-requested features.", "Wrote automated tests that raised coverage from 35% to 70%."]
+
+[[projects]]
+name = "QuickBill"
+description = "Invoice app used by 400+ small shops, built with React, Node.js and PostgreSQL."
+
+[[projects]]
+name = "TrailNotes"
+description = "Offline-first hiking journal that syncs when a connection returns."
+`;
+            const T3 = `name = "Meera Kulkarni"
+title = "UI/UX Designer"
+email = "meera.k@example.com"
+phone = "+91 99887 76655"
+location = "Mumbai, Maharashtra"
+portfolio = "behance.net/meera-demo"
+summary = "Product designer who turns messy problems into simple, friendly interfaces. 3 years of work across fintech and health apps, from research to final handoff."
+skills = ["User Research", "Wireframing", "Prototyping", "Design Systems", "Accessibility", "Figma"]
+tools = ["Illustrator", "Photoshop", "Notion", "Maze"]
+awards = ["Winner, Product Design Hackathon 2024", "Dean's List, 2021"]
+
+[education]
+degree = "B.Des, Communication Design"
+college = "MIT Institute of Design"
+year = "2021"
+
+[[experience]]
+company = "Studio Orbit"
+role = "Product Designer"
+period = "2022 - Present"
+highlights = ["Redesigned the onboarding of a payments app, lifting sign-up completion by 27%.", "Built a design system of 60+ components now used by four product teams.", "Ran 30+ user interviews and turned findings into a clear roadmap."]
+
+[[experience]]
+company = "Brightside Agency"
+role = "Design Intern"
+period = "2021 - 2022"
+highlights = ["Designed landing pages and social campaigns for 10 small brands.", "Prepared developer handoff files that cut review rounds in half."]
+`;
+            const T4 = `name = "Rohan Patil"
+title = "Computer Science Graduate"
+email = "rohan.patil@example.com"
+phone = "+91 90000 12345"
+location = "Nashik, Maharashtra"
+linkedin = "linkedin.com/in/rohan-patil-demo"
+objective = "Motivated graduate looking for an entry-level software role where I can learn quickly, write reliable code and contribute to real products."
+skills = ["Java", "Python", "SQL", "HTML and CSS", "Git and GitHub", "Problem Solving"]
+achievements = ["Top 10 finalist, college hackathon 2025", "Solved 150+ problems on LeetCode"]
+
+[education]
+degree = "B.Tech, Computer Science"
+college = "COEP Technological University"
+year = "2025"
+score = "CGPA 8.4"
+
+[[projects]]
+name = "Campus Connect"
+description = "Web app for students to share notes and events, built with Java Spring Boot and MySQL."
+
+[[projects]]
+name = "Weather Buddy"
+description = "Python app that shows a 5-day forecast and sends a daily email summary."
+
+[[internships]]
+company = "Nimbus Software"
+role = "Software Intern"
+period = "Jan - Jun 2025"
+summary = "Built three API endpoints and wrote unit tests for a customer billing service."
+`;
+            const T5 = `name = "Sneha Joshi"
+title = "Marketing Manager"
+email = "sneha.joshi@example.com"
+phone = "+91 98200 33445"
+location = "Pune, Maharashtra"
+linkedin = "linkedin.com/in/sneha-joshi-demo"
+summary = "Brand and growth marketer with 8 years of experience leading campaigns, teams and budgets across retail and software. Known for clear strategy and measurable results."
+skills = ["Brand Strategy", "Digital Campaigns", "Team Leadership", "Budget Planning", "Market Research", "SEO and Analytics"]
+
+[education]
+degree = "MBA, Marketing"
+college = "Symbiosis Institute of Business Management"
+year = "2016"
+
+[[experience]]
+company = "Zenith Retail"
+role = "Marketing Manager"
+period = "2020 - Present"
+highlights = ["Lead a team of 9 and a yearly budget of Rs. 2.4 crore across online and in-store channels.", "Grew online revenue by 46% in two years through targeted email and search campaigns.", "Launched a loyalty programme that now has 80,000 active members."]
+
+[[experience]]
+company = "CloudNest"
+role = "Senior Marketing Executive"
+period = "2016 - 2020"
+highlights = ["Planned product launches for five software products in three markets.", "Reduced cost per lead by 31% by moving spend to the best performing channels."]
+`;
+            const TPL = [
+                {
+                    n: "Classic Finance",
+                    d: "One column, navy. ATS-safe. For finance and corporate roles.",
+                    cls: "",
+                    sw: "background:linear-gradient(#fff 0 30px,#12355b 30px 33px,#fff 33px)",
+                    toml: DEMO,
+                    html: () => {
+                        const s = (n) => S(n, "sec");
+                        return (
+                            '<h1 class="rn">' +
+                            K("name") +
+                            '</h1><p class="rt">' +
+                            K("title") +
+                            '</p><p class="rc">' +
+                            K("email") +
+                            " | " +
+                            K("phone") +
+                            " | " +
+                            K("location") +
+                            " | " +
+                            K("linkedin") +
+                            "</p>" +
+                            s("Summary") +
+                            "<p>" +
+                            K("summary") +
+                            "</p>" +
+                            s("Experience") +
+                            each(
+                                "experience",
+                                (q) =>
+                                    '<p class="job"><b>' +
+                                    K(q + "role") +
+                                    "</b> | " +
+                                    K(q + "company") +
+                                    " | <i>" +
+                                    K(q + "period") +
+                                    "</i></p>" +
+                                    ul(q + "highlights"),
+                            ) +
+                            s("Education") +
+                            '<p class="job"><b>' +
+                            K("education.degree") +
+                            "</b> | " +
+                            K("education.college") +
+                            " | <i>" +
+                            K("education.passout_year") +
+                            "</i></p>" +
+                            s("Skills") +
+                            "<p>" +
+                            K("skills") +
+                            "</p>" +
+                            s("Certifications") +
+                            ul("certifications")
+                        );
+                    },
+                },
+                {
+                    n: "Developer Sidebar",
+                    d: "Dark sidebar with photo. For software and tech roles.",
+                    cls: "t2",
+                    sw: "background:linear-gradient(90deg,#1f2937 0 34%,#fff 34%)",
+                    toml: T2,
+                    html: () =>
+                        '<div class="sb"><div class="sd"><img class="ph" src="' +
+                        A[0] +
+                        '" alt="Profile photo"><h3>Contact</h3><p>' +
+                        K("email") +
+                        "</p><p>" +
+                        K("phone") +
+                        "</p><p>" +
+                        K("location") +
+                        "</p><p>" +
+                        K("github") +
+                        "</p><h3>Skills</h3>" +
+                        ul("skills") +
+                        "<h3>Languages</h3>" +
+                        ul("languages") +
+                        '</div><div class="mn"><h1>' +
+                        K("name") +
+                        '</h1><p class="sub">' +
+                        K("title") +
+                        "</p>" +
+                        S("Profile") +
+                        "<p>" +
+                        K("summary") +
+                        "</p>" +
+                        S("Experience") +
+                        each(
+                            "experience",
+                            (q) =>
+                                '<p class="job"><b>' +
+                                K(q + "role") +
+                                "</b>, " +
+                                K(q + "company") +
+                                " <i>(" +
+                                K(q + "period") +
+                                ")</i></p>" +
+                                ul(q + "highlights"),
+                        ) +
+                        S("Projects") +
+                        each(
+                            "projects",
+                            (q) =>
+                                '<p class="job"><b>' +
+                                K(q + "name") +
+                                "</b>: " +
+                                K(q + "description") +
+                                "</p>",
+                        ) +
+                        S("Education") +
+                        "<p>" +
+                        K("education.degree") +
+                        ", " +
+                        K("education.college") +
+                        " (" +
+                        K("education.year") +
+                        ")</p></div></div>",
+                },
+                {
+                    n: "Creative Portfolio",
+                    d: "Plum header band with photo. For designers and creatives.",
+                    cls: "t3",
+                    sw: "background:linear-gradient(#4a1d4f 0 34px,transparent 34px),linear-gradient(90deg,#fff 0 69%,#fff3ea 69%)",
+                    toml: T3,
+                    html: () =>
+                        '<div class="hd"><img src="' +
+                        A[1] +
+                        '" alt="Profile photo"><div><h1>' +
+                        K("name") +
+                        '</h1><p class="sub">' +
+                        K("title") +
+                        "</p><p>" +
+                        K("email") +
+                        " | " +
+                        K("phone") +
+                        " | " +
+                        K("location") +
+                        " | " +
+                        K("portfolio") +
+                        '</p></div></div><div class="bd"><div class="lf">' +
+                        S("Profile") +
+                        "<p>" +
+                        K("summary") +
+                        "</p>" +
+                        S("Experience") +
+                        each(
+                            "experience",
+                            (q) =>
+                                '<p class="job"><b>' +
+                                K(q + "role") +
+                                "</b> | " +
+                                K(q + "company") +
+                                " | <i>" +
+                                K(q + "period") +
+                                "</i></p>" +
+                                ul(q + "highlights"),
+                        ) +
+                        '</div><div class="rg">' +
+                        S("Skills") +
+                        ul("skills") +
+                        S("Tools") +
+                        ul("tools") +
+                        S("Education") +
+                        "<p><b>" +
+                        K("education.degree") +
+                        "</b><br>" +
+                        K("education.college") +
+                        "<br>" +
+                        K("education.year") +
+                        "</p>" +
+                        S("Awards") +
+                        ul("awards") +
+                        "</div></div>",
+                },
+                {
+                    n: "Fresh Graduate",
+                    d: "Green, education first, with photo. For first jobs and internships.",
+                    cls: "t4",
+                    sw: "background:linear-gradient(#fff 0 40px,#16a34a 40px 43px,#dcfce7 43px 55px,#fff 55px)",
+                    toml: T4,
+                    html: () =>
+                        '<div class="top"><img src="' +
+                        A[2] +
+                        '" alt="Profile photo"><div><h1>' +
+                        K("name") +
+                        '</h1><p class="sub">' +
+                        K("title") +
+                        "</p><p>" +
+                        K("email") +
+                        " | " +
+                        K("phone") +
+                        " | " +
+                        K("location") +
+                        " | " +
+                        K("linkedin") +
+                        "</p></div></div>" +
+                        S("Objective") +
+                        "<p>" +
+                        K("objective") +
+                        "</p>" +
+                        S("Education") +
+                        '<p class="job"><b>' +
+                        K("education.degree") +
+                        "</b>, " +
+                        K("education.college") +
+                        " (" +
+                        K("education.year") +
+                        ") | " +
+                        K("education.score") +
+                        "</p>" +
+                        S("Skills") +
+                        ul("skills").replace("<ul>", '<ul class="cc">') +
+                        S("Projects") +
+                        each(
+                            "projects",
+                            (q) =>
+                                '<p class="job"><b>' +
+                                K(q + "name") +
+                                "</b>: " +
+                                K(q + "description") +
+                                "</p>",
+                        ) +
+                        S("Internship") +
+                        each(
+                            "internships",
+                            (q) =>
+                                '<p class="job"><b>' +
+                                K(q + "role") +
+                                "</b>, " +
+                                K(q + "company") +
+                                " | <i>" +
+                                K(q + "period") +
+                                "</i></p><p>" +
+                                K(q + "summary") +
+                                "</p>",
+                        ) +
+                        S("Achievements") +
+                        ul("achievements"),
+                },
+                {
+                    n: "Executive Serif",
+                    d: "Centered serif in maroon. For senior and management roles.",
+                    cls: "t5",
+                    sw: "background:linear-gradient(#fff 0 36px,#7a1f2b 36px 37px,#fff 37px 44px,#7a1f2b 44px 45px,#fff 45px)",
+                    toml: T5,
+                    html: () =>
+                        '<div class="hd5"><h1>' +
+                        K("name") +
+                        '</h1><p class="sub">' +
+                        K("title") +
+                        "</p><p>" +
+                        K("email") +
+                        " \u2022 " +
+                        K("phone") +
+                        " \u2022 " +
+                        K("location") +
+                        " \u2022 " +
+                        K("linkedin") +
+                        "</p></div>" +
+                        S("Profile") +
+                        "<p>" +
+                        K("summary") +
+                        "</p>" +
+                        S("Professional Experience") +
+                        each(
+                            "experience",
+                            (q) =>
+                                '<p class="job"><span class="dt">' +
+                                K(q + "period") +
+                                "</span><b>" +
+                                K(q + "role") +
+                                "</b>, " +
+                                K(q + "company") +
+                                "</p>" +
+                                ul(q + "highlights"),
+                        ) +
+                        S("Core Skills") +
+                        "<p>" +
+                        K("skills") +
+                        "</p>" +
+                        S("Education") +
+                        '<p class="job"><span class="dt">' +
+                        K("education.year") +
+                        "</span><b>" +
+                        K("education.degree") +
+                        "</b>, " +
+                        K("education.college") +
+                        "</p>",
+                },
+            ];
+            /*END*/
+            function tpl(i) {
+                const t = TPL[i];
+                setTOML(t.toml, true);
+                applyLayout({
+                    w: "210mm",
+                    h: "297mm",
+                    m: "20mm",
+                    html:
+                        '<div class="page ' +
+                        t.cls +
+                        '" contenteditable="true">' +
+                        t.html() +
+                        "</div>",
+                });
+                $("#tm").hidden = true;
+                change();
+            }
+            function demo() {
+                tpl(0);
+            }
+            $("#tg").innerHTML = TPL.map(
+                (t, i) =>
+                    '<button class="tc" data-i="' +
+                    i +
+                    '"><div class="sw" style="' +
+                    t.sw +
+                    '"></div><div class="tt"><b>' +
+                    t.n +
+                    '</b><br><span class="mut">' +
+                    t.d +
+                    "</span></div></button>",
+            ).join("");
+            $("#tg").onclick = (e) => {
+                const b = e.target.closest(".tc");
+                if (b) tpl(+b.dataset.i);
+            };
+            on("#tp", "click", () => {
+                $("#tm").hidden = false;
+            });
+            on("#tx", "click", () => {
+                $("#tm").hidden = true;
+            });
+            $("#tm").onclick = (e) => {
+                if (e.target.id === "tm") $("#tm").hidden = true;
+            };
+            document.addEventListener("keydown", (e) => {
+                if (e.key === "Escape") $("#tm").hidden = true;
+            });
+            on("#nw", "click", () => {
+                data = null;
+                toml = "";
+                try {
+                    localStorage.removeItem("tde.toml");
+                } catch (e) {}
+                $("#src").value = "";
+                tree();
+                applyLayout({ w: "210mm", h: "297mm", m: "20mm", html: "" });
+                change();
+            });
+            const COFFEE_URL = "";
+            if (COFFEE_URL) {
+                const a = $("#cf");
+                a.href = COFFEE_URL;
+                a.hidden = false;
+            }
+            document.addEventListener("contextmenu", (e) => {
+                if (!e.target.closest("input,textarea")) e.preventDefault();
+            });
+            document.addEventListener(
+                "keydown",
+                (e) => {
+                    const c = e.code;
+                    if (
+                        c === "F12" ||
+                        ((e.ctrlKey || e.metaKey) &&
+                            (c === "KeyU" ||
+                                ((e.shiftKey || e.altKey) &&
+                                    (c === "KeyI" ||
+                                        c === "KeyJ" ||
+                                        c === "KeyC"))))
+                    )
+                        e.preventDefault();
+                },
+                true,
+            );
+            document.execCommand("defaultParagraphSeparator", false, "p");
+            try {
+                const th = localStorage.getItem("tde.theme");
+                if (th) document.documentElement.dataset.theme = th;
+                const t = localStorage.getItem("tde.toml"),
+                    l = localStorage.getItem("tde.layout");
+                if (!t && !l) tpl(0);
+                else {
+                    if (t) setTOML(t, true);
+                    else tree();
+                    l
+                        ? applyLayout(JSON.parse(l))
+                        : applyLayout({
+                              w: "210mm",
+                              h: "297mm",
+                              m: "20mm",
+                              html: "",
+                          });
+                }
+            } catch (e) {
+                tree();
+                applyLayout({ w: "210mm", h: "297mm", m: "20mm", html: "" });
+            }
+        </script>
+    </body>
+</html>
